@@ -1,0 +1,73 @@
+version: "3"
+services:
+  kafka1:
+    image: bitnami/kafka:3.4.0
+    container_name: kafka1
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:17005,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_KRAFT_CLUSTER_ID=W8Z2VHosQfih8jIfvN9poC
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:17005
+      - KAFKA_BROKER_ID=1
+    networks:
+      - kafka-cluster
+
+  kafka2:
+    image: bitnami/kafka:3.4.0
+    container_name: kafka2
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:17005,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_KRAFT_CLUSTER_ID=W8Z2VHosQfih8jIfvN9poC
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka2:17005
+      - KAFKA_BROKER_ID=2
+    networks:
+      - kafka-cluster
+
+  kafka3:
+    image: bitnami/kafka:3.4.0
+    container_name: kafka3
+    environment:
+      - KAFKA_ENABLE_KRAFT=yes
+      - KAFKA_CFG_PROCESS_ROLES=broker,controller
+      - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:17005,CONTROLLER://:9093
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_CFG_CONTROLLER_QUORUM_VOTERS=1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_HEAP_OPTS=-Xmx512M -Xms256M 
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_KRAFT_CLUSTER_ID=W8Z2VHosQfih8jIfvN9poC
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka3:17005
+      - KAFKA_BROKER_ID=3
+    networks:
+      - kafka-cluster
+
+  kafka-debug:
+    image: bitnami/kafka:3.4.0
+    hostname: kafka-debug
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    profiles:
+      - debug
+    networks:
+      - kafka-cluster
+
+networks:
+  kafka-cluster: {}
